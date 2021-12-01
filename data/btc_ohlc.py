@@ -1,6 +1,7 @@
 import requests
 import mysql.connector as mysql
 import os
+from datetime import datetime
 
 
 db_connection = mysql.connect(
@@ -12,10 +13,35 @@ db_connection = mysql.connect(
 
 cursor = db_connection.cursor()
 
+
 response = requests.get('https://ftx.com/api/markets/BTC/USD/candles?resolution=86400').json()
-# print(response)
-data = response['result']
-# print(data)
+ftx_data = response['result']
+
+def get_mysql_data():
+    cursor.execute('select start_time from btcusd order by start_time desc limit 1;')
+    result = cursor.fetchall()
+    return result[0][0]
+
+recent = get_mysql_data()
+
+def get_data_to_insert():
+    d = []
+
+    sorted_data = sorted(ftx_data, key=lambda x: x['time'], reverse=True)
+    date = sorted_data[0]['startTime'][:19]
+    date_str = str(date)
+    date_str.replace('T', ' ')
+    formatted = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+
+    # if sorted_data[0]['time'] >= recent:
+        # print('true')
+        # d.append(i)
+
+    print(d)
+    return d
+
+
+get_data_to_insert()
 
 def insert_data(data):
     for i in data:
@@ -26,4 +52,4 @@ def insert_data(data):
     db_connection.commit()
     print(cursor.rowcount, "records inserted...")
 
-insert_data(data)
+# insert_data(data)
