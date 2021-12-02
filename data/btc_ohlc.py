@@ -26,22 +26,17 @@ recent = get_mysql_data()
 
 def get_data_to_insert():
     d = []
-
     sorted_data = sorted(ftx_data, key=lambda x: x['time'], reverse=True)
-    date = sorted_data[0]['startTime'][:19]
-    date_str = str(date)
-    date_str.replace('T', ' ')
-    formatted = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
 
-    # if sorted_data[0]['time'] >= recent:
-        # print('true')
-        # d.append(i)
+    for i in sorted_data:
+        date = i['startTime'][:10]
+        formatted = datetime.strptime(date, '%Y-%m-%d')
+        if formatted > recent:
+            d.append(i)
 
-    print(d)
     return d
 
-
-get_data_to_insert()
+new_data = get_data_to_insert()
 
 def insert_data(data):
     for i in data:
@@ -52,4 +47,4 @@ def insert_data(data):
     db_connection.commit()
     print(cursor.rowcount, "records inserted...")
 
-# insert_data(data)
+insert_data(new_data)
