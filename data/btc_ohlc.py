@@ -14,8 +14,7 @@ db_connection = mysql.connect(
 cursor = db_connection.cursor()
 
 
-response = requests.get('https://ftx.com/api/markets/BTC/USD/candles?resolution=86400').json()
-ftx_data = response['result']
+ftx_data = requests.get('https://ftx.com/api/markets/BTC/USD/candles?resolution=86400').json()
 
 def get_mysql_data():
     cursor.execute('select start_time from btcusd order by start_time desc limit 1;')
@@ -26,7 +25,7 @@ recent = get_mysql_data()
 
 def get_data_to_insert():
     d = []
-    sorted_data = sorted(ftx_data, key=lambda x: x['time'], reverse=True)
+    sorted_data = sorted(ftx_data['result'], key=lambda x: x['time'], reverse=True)
 
     for i in sorted_data:
         date = i['startTime'][:10]
