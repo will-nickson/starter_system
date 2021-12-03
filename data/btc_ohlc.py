@@ -1,19 +1,10 @@
+import sys
 import requests
-import mysql.connector as mysql
-import os
 from datetime import datetime
+sys.path.insert(0, './')
+import mysql_conn 
 
-
-db_connection = mysql.connect(
-        host=os.environ.get('MYSQL_HOST'),
-        user=os.environ.get('MYSQL_USER'),
-        password=os.environ.get('MSQL_PASSWORD'),
-        database=os.environ.get('BTC_DATA')
-)
-
-cursor = db_connection.cursor()
-
-
+cursor = mysql_conn.connect()
 ftx_data = requests.get('https://ftx.com/api/markets/BTC/USD/candles?resolution=86400').json()
 
 def get_mysql_data():
