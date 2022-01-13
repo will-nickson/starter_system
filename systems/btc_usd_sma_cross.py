@@ -10,7 +10,7 @@ historical.set_index('time', inplace=True)
 historical['16_SMA'] = historical.close.rolling(16).mean()
 historical['64_SMA'] = historical.close.rolling(64).mean()
 
-# print(historical.tail())
+print(historical.tail())
 
 fig = go.Figure(data=[go.Candlestick(x = historical.index,
                                    open = historical['open'],
